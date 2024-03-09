@@ -20,9 +20,9 @@ exports.createCulture = async (req, res) => {
       remarques: remarques
 
     });
-    res.json({ status: "ok" });
+    res.json({ success: true, message: 'Culture created' });
   } catch (error) {
-    res.json({ status: error });
+    res.json({ success: false,  message: err.message });
   }
 };
 
