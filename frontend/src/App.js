@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import axios from "axios";
 import 'bootstrap/dist/css/bootstrap.min.css';
 import CreateCulture from "./components/CreateCulture";
-
+import DeleteCulture from "./components/DeleteCulture";
 function App() {
   const [allCulture, setAllCulture] = useState(null);
   useEffect(() => {
@@ -49,8 +49,8 @@ function App() {
               /></td>
             <td>{data.nom_culture}</td>
             <td>
-               
               
+            <DeleteCulture cultureId={data._id} onDelete={getCulture} />
               
             </td>
           </tr>

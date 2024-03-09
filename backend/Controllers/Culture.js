@@ -1,5 +1,6 @@
 // controllers/cultureController.js
 const Culture = require('../Models/Culture');
+const fs = require('fs');
 
 // Créer une nouvelle culture
 exports.createCulture = async (req, res) => {
@@ -63,16 +64,23 @@ exports.updateCulture = async (req, res) => {
 };
 
 // Supprimer une culture par son ID
+// Supprimer une culture par son ID
 exports.deleteCulture = async (req, res) => {
   try {
     const culture = await Culture.findByIdAndDelete(req.params.id);
     if (!culture) {
       return res.status(404).json({ success: false, message: 'Culture not found' });
     }
+    
+    // Supprimer l'image associée
+    const imagePath = `../frontend/src/images/${culture.image_culture}`;
+    fs.unlinkSync(imagePath);
+
     res.status(200).json({ success: true, message: 'Culture deleted successfully' });
   } catch (err) {
     res.status(500).json({ success: false, message: err.message });
   }
 };
+
 
 
