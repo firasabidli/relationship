@@ -2,9 +2,21 @@
 const express = require('express');
 const router = express.Router();
 const cultureController = require('../Controllers/Culture');
+const multer = require("multer");
 
+const storage = multer.diskStorage({
+  destination: function (req, file, cb) {
+    cb(null, "../frontend/src/images/");
+  },
+  filename: function (req, file, cb) {
+    const uniqueSuffix = Date.now();
+    cb(null, uniqueSuffix + file.originalname);
+  },
+});
+
+const upload = multer({ storage: storage });
 // Créer une nouvelle culture
-router.post('/', cultureController.createCulture);
+router.post('/',upload.single("image_culture"), cultureController.createCulture);
 
 // Récupérer toutes les cultures
 router.get('/', cultureController.getCultures);

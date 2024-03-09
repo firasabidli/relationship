@@ -3,11 +3,26 @@ const Culture = require('../Models/Culture');
 
 // Créer une nouvelle culture
 exports.createCulture = async (req, res) => {
+  console.log(req.body);
+  const { nom_culture, date_plantation, date_recolte, methode_irrigation, quantite_eau_irrigation, frequence_surveillance, date_derniere_surveillance, remarques } = req.body;
+  const imageName = req.file.filename;
+ 
   try {
-    const culture = await Culture.create(req.body);
-    res.status(201).json({ success: true, data: culture });
-  } catch (err) {
-    res.status(400).json({ success: false, message: err.message });
+    await Culture.create({ 
+      nom_culture: nom_culture,
+      date_plantation: date_plantation,
+      date_recolte: date_recolte,
+      methode_irrigation: methode_irrigation,
+      quantite_eau_irrigation: quantite_eau_irrigation,
+      frequence_surveillance: frequence_surveillance,
+      date_derniere_surveillance: date_derniere_surveillance,
+      image_culture: imageName, 
+      remarques: remarques
+
+    });
+    res.json({ status: "ok" });
+  } catch (error) {
+    res.json({ status: error });
   }
 };
 
