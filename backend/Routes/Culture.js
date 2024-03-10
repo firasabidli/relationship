@@ -25,7 +25,7 @@ router.get('/', cultureController.getCultures);
 router.get('/:id', cultureController.getCultureById);
 
 // Mettre à jour une culture par son ID
-router.put('/:id', cultureController.updateCulture);
+router.put('/:id',upload.single("image_culture"), cultureController.updateCulture);
 
 // Supprimer une culture par son ID
 router.delete('/:id', cultureController.deleteCulture);

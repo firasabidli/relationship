@@ -3,6 +3,8 @@ import axios from "axios";
 import 'bootstrap/dist/css/bootstrap.min.css';
 import CreateCulture from "./components/CreateCulture";
 import DeleteCulture from "./components/DeleteCulture";
+import UpdateCulture from "./components/UpdateCulture";
+import DetailsCulture from "./components/DetailsCulture";
 function App() {
   const [allCulture, setAllCulture] = useState(null);
   useEffect(() => {
@@ -31,8 +33,8 @@ function App() {
         <thead>
           <tr>
             <th scope="col">#</th>
-            <th scope="col">Image Culture</th>
             <th scope="col">Nom Culture</th>
+            <th scope="col">Remarques</th>
             <th scope="col">Action</th>
           </tr>
         </thead>
@@ -42,14 +44,11 @@ function App() {
         :  allCulture.map((data, index) => (
           <tr key={data._id}>
             <th scope="row">{index + 1}</th>
-            <td><img
-                src={require(`./images/${data.image_culture}`)}
-                height={100}
-                width={100}
-              /></td>
             <td>{data.nom_culture}</td>
+            <td>{data.remarques}</td>
             <td>
-              
+              <DetailsCulture cultureId={data._id} />
+            <UpdateCulture cultureId={data._id} onUpdate={getCulture}/>
             <DeleteCulture cultureId={data._id} onDelete={getCulture} />
               
             </td>

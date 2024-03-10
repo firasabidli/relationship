@@ -17,6 +17,7 @@ function CreateCulture({ OnCreate }) {
   const [date_derniere_surveillance, setDateDerniereSurveillance] = useState("");
   const [image_culture, setImageCulture] = useState(null);
   const [remarques, setRemarques] = useState("");
+  
  
 
 
@@ -58,6 +59,7 @@ function CreateCulture({ OnCreate }) {
           headers: { "Content-Type": "multipart/form-data" },
         }
       );
+      window.location.reload();
       console.log(result);
       // Refresh Culture after successful upload
       if (result.data.success) {

@@ -53,15 +53,45 @@ exports.getCultureById = async (req, res) => {
 // Mettre à jour une culture par son ID
 exports.updateCulture = async (req, res) => {
   try {
-    const culture = await Culture.findByIdAndUpdate(req.params.id, req.body, { new: true });
-    if (!culture) {
+    const { nom_culture, date_plantation, date_recolte, methode_irrigation, quantite_eau_irrigation, frequence_surveillance, date_derniere_surveillance, remarques } = req.body;
+
+    let updateData = {
+      nom_culture,
+      date_plantation,
+      date_recolte,
+      methode_irrigation,
+      quantite_eau_irrigation,
+      frequence_surveillance,
+      date_derniere_surveillance,
+      remarques
+    };
+
+    // Vérifiez si une nouvelle image est téléchargée
+    if (req.file) {
+      // Supprimez l'ancienne image
+      const culture = await Culture.findById(req.params.id);
+      if (culture) {
+        const imagePath = `../frontend/src/images/${culture.image_culture}`;
+        fs.unlinkSync(imagePath);
+      }
+
+      // Mettez à jour le nom de l'image dans la base de données
+      const imageName = req.file.filename;
+      updateData.image_culture = imageName;
+    }
+
+    const updatedCulture = await Culture.findByIdAndUpdate(req.params.id, updateData, { new: true });
+
+    if (!updatedCulture) {
       return res.status(404).json({ success: false, message: 'Culture not found' });
     }
-    res.status(200).json({ success: true, data: culture });
+
+    res.status(200).json({ success: true,message: 'Culture Updated', data: updatedCulture });
   } catch (err) {
     res.status(500).json({ success: false, message: err.message });
   }
 };
+
 
 // Supprimer une culture par son ID
 // Supprimer une culture par son ID
