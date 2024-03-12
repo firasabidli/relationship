@@ -77,7 +77,7 @@ exports.getCultureById = async (req, res) => {
 // Mettre à jour une culture par son ID
 exports.updateCulture = async (req, res) => {
   try {
-    const { nom_culture, date_plantation, date_recolte, methode_irrigation, quantite_eau_irrigation, frequence_surveillance, date_derniere_surveillance, remarques } = req.body;
+    const { nom_culture, date_plantation, date_recolte, methode_irrigation, quantite_eau_irrigation, frequence_surveillance, date_derniere_surveillance, remarques, saisonId, categorieId, materials, stocks } = req.body;
 
     let updateData = {
       nom_culture,
@@ -87,7 +87,11 @@ exports.updateCulture = async (req, res) => {
       quantite_eau_irrigation,
       frequence_surveillance,
       date_derniere_surveillance,
-      remarques
+      remarques,
+      saison: saisonId,
+      categorie: categorieId,
+      materiels: materials,
+      stocks:stocks, 
     };
 
     // Vérifiez si une nouvelle image est téléchargée
