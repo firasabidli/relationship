@@ -229,9 +229,7 @@ const [selectedStocks, setSelectedStocks] = useState([]);
               <FloatingLabel controlId="floatingTextarea2" label="Image Culture:">
                 <Form.Control
                   type="file"
-                  
-                  
-                  accept="image/*" onChange={onInputChange}
+                  onChange={onInputChange}
                 />
               </FloatingLabel>
             </Form.Group>
