@@ -1,11 +1,11 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import Button from 'react-bootstrap/Button';
 import Modal from 'react-bootstrap/Modal';
 import Form from 'react-bootstrap/Form';
 import FloatingLabel from 'react-bootstrap/FloatingLabel';
 import axios from 'axios';
 
-function CreateCulture({ OnCreate }) {
+function CreateCulture() {
   const [show, setShow] = useState(false);
 
   const [nom_culture, setNomCulture] = useState("");
@@ -17,9 +17,59 @@ function CreateCulture({ OnCreate }) {
   const [date_derniere_surveillance, setDateDerniereSurveillance] = useState("");
   const [image_culture, setImageCulture] = useState(null);
   const [remarques, setRemarques] = useState("");
-  
- 
+  const [saisons, setSaisons] = useState([]);
+  const [categories, setCategories] = useState([]);
+  const [selectedSaison, setSelectedSaison] = useState('');
+  const [selectedCategorie, setSelectedCategorie] = useState('');
+  const [materials, setMaterials] = useState([]);
+  const [stocks, setStocks] = useState([]);
+  const [selectedMaterials, setSelectedMaterials] = useState([]);
+const [selectedStocks, setSelectedStocks] = useState([]);
 
+ 
+  useEffect(() => {
+    fetchSaisons();
+    fetchCategories();
+    fetchMaterials();
+    fetchStocks();
+    // Ajoutez des appels similaires pour les matériels et les stocks
+  }, []);
+
+  const fetchSaisons = async () => {
+    try {
+      const response = await axios.get("http://localhost:3001/api/saison");
+      setSaisons(response.data.data);
+    } catch (error) {
+      console.error("Error fetching saisons:", error);
+    }
+  };
+
+  const fetchCategories = async () => {
+    try {
+      const response = await axios.get("http://localhost:3001/api/categorie");
+      setCategories(response.data.data);
+    } catch (error) {
+      console.error("Error fetching categories:", error);
+    }
+  };
+
+  const fetchMaterials = async () => {
+    try {
+      const response = await axios.get("http://localhost:3001/api/materiel");
+      setMaterials(response.data.data);
+    } catch (error) {
+      console.error("Error fetching materials:", error);
+    }
+  };
+  
+  const fetchStocks = async () => {
+    try {
+      const response = await axios.get("http://localhost:3001/api/stock");
+      setStocks(response.data.data);
+    } catch (error) {
+      console.error("Error fetching stocks:", error);
+    }
+  };
 
   const handleClose = () => {
     setShow(false);
@@ -32,6 +82,8 @@ function CreateCulture({ OnCreate }) {
   setDateDerniereSurveillance('');
   setImageCulture(null);
   setRemarques('');
+  setSelectedCategorie('');
+  setSelectedSaison('');
 
   };
 
@@ -50,7 +102,15 @@ function CreateCulture({ OnCreate }) {
     formData.append("date_derniere_surveillance", date_derniere_surveillance);
     formData.append("image_culture", image_culture);
     formData.append("remarques", remarques);
-
+    formData.append("saisonId", selectedSaison);
+    formData.append("categorieId", selectedCategorie);
+    selectedMaterials.forEach(material => {
+      formData.append('materials', material);
+    });
+  
+    selectedStocks.forEach(stock => {
+      formData.append('stocks', stock);
+    });
     try {
       const result = await axios.post(
         "http://localhost:3001/api/culture",
@@ -186,6 +246,45 @@ function CreateCulture({ OnCreate }) {
                 />
               </FloatingLabel>
             </Form.Group>
+
+
+            <Form.Group className="mb-3" controlId="saison">
+              <Form.Label>Saison</Form.Label>
+              <Form.Control as="select" value={selectedSaison} onChange={(e) => setSelectedSaison(e.target.value)}>
+                <option value="">Sélectionnez une saison</option>
+                {saisons.map(saison => (
+                  <option key={saison._id} value={saison._id}>{saison.nom_saison}</option>
+                ))}
+              </Form.Control>
+            </Form.Group>
+
+            <Form.Group className="mb-3" controlId="categorie">
+              <Form.Label>Catégorie</Form.Label>
+              <Form.Control as="select" value={selectedCategorie} onChange={(e) => setSelectedCategorie(e.target.value)}>
+                <option value="">Sélectionnez une catégorie</option>
+                {categories.map(categorie => (
+                  <option key={categorie._id} value={categorie._id}>{categorie.nom_categorie}</option>
+                ))}
+              </Form.Control>
+            </Form.Group>
+
+            <Form.Group className="mb-3" controlId="materials">
+  <Form.Label>Matériaux</Form.Label>
+  <Form.Control as="select" multiple value={selectedMaterials} onChange={(e) => setSelectedMaterials(Array.from(e.target.selectedOptions, (option) => option.value))}>
+    {materials.map(material => (
+      <option key={material._id} value={material._id}>{material.name}</option>
+    ))}
+  </Form.Control>
+</Form.Group>
+
+<Form.Group className="mb-3" controlId="stocks">
+  <Form.Label>Stocks</Form.Label>
+  <Form.Control as="select" multiple value={selectedStocks} onChange={(e) => setSelectedStocks(Array.from(e.target.selectedOptions, (option) => option.value))}>
+    {stocks.map(stock => (
+      <option key={stock._id} value={stock._id}>{stock.name}</option>
+    ))}
+  </Form.Control>
+</Form.Group>
             
           </Form>
         </Modal.Body>

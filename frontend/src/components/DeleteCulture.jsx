@@ -13,7 +13,7 @@ function DeleteCulture({ cultureId , onDelete }) {
   const confirmDelete = async () => {
     try {
       await axios.delete(`http://localhost:3001/api/culture/${cultureId}`);
-      onDelete(); 
+      window.location.reload();
       handleClose(); 
     } catch (error) {
       console.error('Erreur lors de la suppression du Culture', error);

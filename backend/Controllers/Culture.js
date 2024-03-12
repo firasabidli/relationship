@@ -2,28 +2,52 @@
 const Culture = require('../Models/Culture');
 const fs = require('fs');
 
-// Créer une nouvelle culture
-exports.createCulture = async (req, res) => {
-  console.log(req.body);
-  const { nom_culture, date_plantation, date_recolte, methode_irrigation, quantite_eau_irrigation, frequence_surveillance, date_derniere_surveillance, remarques } = req.body;
-  const imageName = req.file.filename;
- 
-  try {
-    await Culture.create({ 
-      nom_culture: nom_culture,
-      date_plantation: date_plantation,
-      date_recolte: date_recolte,
-      methode_irrigation: methode_irrigation,
-      quantite_eau_irrigation: quantite_eau_irrigation,
-      frequence_surveillance: frequence_surveillance,
-      date_derniere_surveillance: date_derniere_surveillance,
-      image_culture: imageName, 
-      remarques: remarques
 
+//create culture
+exports.createCulture = async (req, res) => {
+  const {
+    nom_culture,
+    date_plantation,
+    date_recolte,
+    methode_irrigation,
+    quantite_eau_irrigation,
+    frequence_surveillance,
+    date_derniere_surveillance,
+    remarques,
+    saisonId, // Identifiant de la saison sélectionnée
+    categorieId, // Identifiant de la catégorie sélectionnée
+    materials, // Matériaux sélectionnés
+    stocks, // Stocks sélectionnés
+    // Ajoutez d'autres identifiants pour les matériels et les stocks si nécessaire
+  } = req.body;
+
+  const imageName = req.file.filename;
+
+  try {
+    // Create the culture entry
+    const newCulture = await Culture.create({
+      nom_culture,
+      date_plantation,
+      date_recolte,
+      methode_irrigation,
+      quantite_eau_irrigation,
+      frequence_surveillance,
+      date_derniere_surveillance,
+      image_culture: imageName,
+      remarques,
+      saison: saisonId, 
+      categorie: categorieId,
+      materiels: materials,
+      stocks:stocks, 
+      
     });
-    res.json({ success: true, message: 'Culture created' });
+
+    // Associate selected materials with the culture
+    
+
+    res.json({ success: true, message: 'Culture created', data: newCulture });
   } catch (error) {
-    res.json({ success: false,  message: err.message });
+    res.status(500).json({ success: false, message: error.message });
   }
 };
 
